@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Message } from '../types';
 import { BotIcon, UserIcon } from './IconComponents';
@@ -36,7 +35,14 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
             : 'bg-gray-700 rounded-bl-none'
         }`}
       >
-        <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+        {isBot ? (
+          <div
+            className="text-sm whitespace-pre-wrap [&_a]:text-cyan-300 [&_a]:underline"
+            dangerouslySetInnerHTML={{ __html: message.text }}
+          />
+        ) : (
+          <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+        )}
       </div>
        {isUser && (
         <div className="flex-shrink-0">
