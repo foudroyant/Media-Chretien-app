@@ -1,12 +1,15 @@
 import React from 'react';
 import { Message } from '../types';
-import { BotIcon, UserIcon } from './IconComponents';
+import { BotIcon, UserIcon, TrashIcon } from './IconComponents';
 
 interface ChatBubbleProps {
   message: Message;
+  isSelected: boolean;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isSelected, onSelect, onDelete }) => {
   const isUser = message.sender === 'user';
   const isBot = message.sender === 'bot';
   const isSystem = message.sender === 'system';
@@ -20,7 +23,23 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
   }
 
   return (
-    <div className={`flex items-end gap-3 p-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div 
+      className={`flex items-end gap-3 p-4 group ${isUser ? 'justify-end' : 'justify-start'} ${!isSystem ? 'cursor-pointer' : ''}`}
+      onClick={isSystem ? undefined : () => onSelect(message.id)}
+    >
+      {isUser && isSelected && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(message.id);
+          }}
+          className="p-1.5 rounded-full text-gray-400 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          aria-label="Supprimer le message"
+        >
+          <TrashIcon className="w-4 h-4" />
+        </button>
+      )}
+
       {!isUser && (
         <div className="flex-shrink-0">
           <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
@@ -50,6 +69,19 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
             <UserIcon className="w-5 h-5 text-gray-300" />
           </div>
         </div>
+      )}
+
+      {!isUser && !isSystem && isSelected && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(message.id);
+          }}
+          className="p-1.5 rounded-full text-gray-400 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+          aria-label="Supprimer le message"
+        >
+          <TrashIcon className="w-4 h-4" />
+        </button>
       )}
     </div>
   );

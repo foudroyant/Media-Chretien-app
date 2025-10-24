@@ -8,9 +8,9 @@ import TypingIndicator from './components/TypingIndicator';
 import SuggestedQuestions from './components/SuggestedQuestions';
 
 const SUGGESTED_QUESTIONS = [
-  "Je veux participer à des cultes speciaux, comment faire",
-  "Comment faire pour recevoir la prière",
-  "Où trouver le livre du prophète Kacou Philippe en audio ou l'application"
+  "Je veux participer aux services de guérisons, comment faire ?",
+  "Quelles sont les prochaines dates des services de guérison au Congo Brazzaville ?",
+  "Où trouver le livre du prophète Kacou Philippe en audio ou l'application ?"
 ];
 
 const App: React.FC = () => {
@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [session, setSession] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showSuggested, setShowSuggested] = useState<boolean>(false);
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Load session and messages from localStorage on initial render
@@ -66,6 +67,9 @@ const App: React.FC = () => {
       } catch (error) {
         console.error("Failed to save to localStorage", error);
       }
+    } else if (messages.length === 0 && session) {
+      // If all messages are deleted, clear localStorage
+      localStorage.removeItem('chat_messages');
     }
   }, [session, messages]);
 
@@ -73,8 +77,18 @@ const App: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+  
+  const handleSelectMessage = (id: string) => {
+    setSelectedMessageId((prevId) => (prevId === id ? null : id));
+  };
+
+  const handleDeleteMessage = (id: string) => {
+    setMessages((prev) => prev.filter((msg) => msg.id !== id));
+    setSelectedMessageId(null); // Deselect after deletion
+  };
 
   const handleSendMessage = async (text: string) => {
+    setSelectedMessageId(null); // Deselect any message before sending a new one
     if (showSuggested) {
       setShowSuggested(false); // Hide suggestions on first message
     }
@@ -108,7 +122,13 @@ const App: React.FC = () => {
       <main className="flex-1 overflow-y-auto pt-24 pb-4">
         <div className="max-w-4xl mx-auto px-4">
             {messages.map((msg) => (
-              <ChatBubble key={msg.id} message={msg} />
+              <ChatBubble 
+                key={msg.id} 
+                message={msg}
+                isSelected={selectedMessageId === msg.id}
+                onSelect={handleSelectMessage}
+                onDelete={handleDeleteMessage}
+              />
             ))}
             {showSuggested && !isLoading && (
               <SuggestedQuestions 
