@@ -1,5 +1,5 @@
 
-const API_URL = 'https://n8n.bambyno.xyz/webhook-test/newspkp';
+const API_URL = 'https://n8n.bambyno.xyz/webhook/newspkp';
 
 interface ApiResponse {
   response?: string;
