@@ -1,0 +1,23 @@
+{
+  "short_name": "Media Chretien",
+  "name": "Media Chretien APP",
+  "description": "Ce qu'il faut savoir sur le Message du prophète Kacou Philippe.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#111827",
+  "background_color": "#111827"
+}
